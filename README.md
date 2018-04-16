@@ -9,7 +9,7 @@ Veja que existem dois objetos `AsyncTask` agora. Um é responsável por carregar
 
 Caso você não tenha feito a [Tarefa #1](https://github.com/if1001/exercicio1-rss) use este projeto como base. Do contrário, sugiro que você pegue a estrutura deste projeto como base para modificar o seu projeto. 
 Siga os passos na ordem sugerida e marque mais abaixo, na sua resposta, quais os passos completados. 
-Para entregar o exercício, responda o [formulário de entrega](https://docs.google.com/forms/d/e/1FAIpQLSekCO9cBY3FepSBG3KyQasSMkZQvgS5ikN29x4KnyN9xYSj6Q/viewform) até 16/04/2018, às 23h59.
+Para entregar o exercício, responda o [formulário de entrega](https://docs.google.com/forms/d/e/1FAIpQLSekCO9cBY3FepSBG3KyQasSMkZQvgS5ikN29x4KnyN9xYSj6Q/viewform) até 18/04/2018, às 23h59.
 
   10. A classe `SQLiteRSSHelper` já tem toda a configuração do banco. No entanto, ainda é necessário implementar os métodos de manipulação do banco de dados (da linha 73 em diante), que estão em aberto ainda. A implementação do método `getItems` deve retornar apenas os itens não lidos;
   11. Complete a implementação do método `onItemClick` (linha 74 em diante de `MainActivity`), de forma que ao clicar, o link seja aberto no navegador e a notícia seja marcada como lida no banco;
