@@ -18,12 +18,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ConfigActivity" />
-
-        <provider
-            android:name=".db.RssProvider"
-            android:authorities="br.ufpe.cin.residencia.rss"
-            android:enabled="true"
-            android:exported="true"></provider>
     </application>
 
 </manifest>
