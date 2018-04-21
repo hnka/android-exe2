@@ -94,7 +94,12 @@ public class SQLiteRSSHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(DATABASE_TABLE, columns, ITEM_LINK + "=?", selection, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            ItemRSS item = new ItemRSS(cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4));
+            String titleCol = cursor.getString(cursor.getColumnIndex(ITEM_TITLE));
+            String linkCol = cursor.getString(cursor.getColumnIndex(ITEM_LINK));
+            String dateCol = cursor.getString(cursor.getColumnIndex(ITEM_DATE));
+            String descCol = cursor.getString(cursor.getColumnIndex(ITEM_DESC));
+
+            ItemRSS item = new ItemRSS(titleCol, linkCol, dateCol, descCol);
             cursor.close();
             return item;
         } else {

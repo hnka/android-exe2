@@ -34,7 +34,7 @@ Para entregar o exercício, responda o [formulário de entrega](https://docs.goo
 | Passo | Completou? |
 | ------ | ------ |
 | 10 | **sim** |
-| 11 | **não** |
+| 11 | **sim** |
 | 12 | **não** |
 | 13 | **não** |
 | 14 | **não** |
