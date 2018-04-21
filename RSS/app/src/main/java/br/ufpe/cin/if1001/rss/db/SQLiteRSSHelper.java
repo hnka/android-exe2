@@ -74,20 +74,59 @@ public class SQLiteRSSHelper extends SQLiteOpenHelper {
         return insertItem(item.getTitle(),item.getPubDate(),item.getDescription(),item.getLink());
     }
     public long insertItem(String title, String pubDate, String description, String link) {
-        return 0.0;
+        ContentValues values = new ContentValues();
+        values.put(ITEM_TITLE, title);
+        values.put(ITEM_DATE, pubDate);
+        values.put(ITEM_DESC, description);
+        values.put(ITEM_LINK, link);
+        values.put(ITEM_UNREAD, true);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Long result = db.insert(DATABASE_TABLE, null, values);
+        db.close();
+
+        return result;
     }
     public ItemRSS getItemRSS(String link) throws SQLException {
-        return new ItemRSS("FALTA IMPLEMENTAR","FALTA IMPLEMENTAR","2018-04-09","FALTA IMPLEMENTAR");
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = new String[]{ ITEM_ROWID, ITEM_TITLE, ITEM_LINK, ITEM_DATE, ITEM_DESC };
+        String[] selection = new String[]{ link };
+
+        Cursor cursor = db.query(DATABASE_TABLE, columns, ITEM_LINK + "=?", selection, null, null, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            ItemRSS item = new ItemRSS(cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getString(4));
+            cursor.close();
+            return item;
+        } else {
+            cursor.close();
+            return null;
+        }
     }
     public Cursor getItems() throws SQLException {
-        return null;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String[] columns = new String[]{ ITEM_ROWID, ITEM_TITLE, ITEM_LINK, ITEM_DATE, ITEM_DESC };
+        String[] selection = new String[]{ "1" };
+
+        return db.query(DATABASE_TABLE, columns, ITEM_UNREAD + "=?", selection, null, null, null);
     }
     public boolean markAsUnread(String link) {
-        return false;
+        ContentValues values = new ContentValues();
+        values.put(ITEM_UNREAD, true);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] selection = new String[]{ link };
+        int result = db.update(DATABASE_TABLE, values, ITEM_LINK + "=?", selection);
+        return result > 0;
     }
 
     public boolean markAsRead(String link) {
-        return false;
+        ContentValues values = new ContentValues();
+        values.put(ITEM_UNREAD, false);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] selection = new String[]{ link };
+        int result = db.update(DATABASE_TABLE, values, ITEM_LINK + "=?", selection);
+        return result > 0;
     }
 
 }

@@ -1,14 +1,14 @@
-# Tarefa #2 - RSS 
+# Tarefa #2 - RSS
 
-A ideia deste exercício é aplicar os conceitos de `Service`, `BroadcastReceiver`, `SQLite`, `RecyclerView`, entre outros. 
+A ideia deste exercício é aplicar os conceitos de `Service`, `BroadcastReceiver`, `SQLite`, `RecyclerView`, entre outros.
 
-A aplicação RSS disponível neste repositório é uma versão atualizada da que foi passada como exercício anterior, mas *ainda incompleta*. Observe os passos listados abaixo. 
-Esta versão está usando a classe `SQLiteRSSHelper` para gerenciar o banco de dados `SQLite` como forma de persistir os dados. 
-Isto é, após o download e parsing do RSS, a lista de itens do feed está sendo armazenada no banco, ao invés de exibida diretamente na tela. 
-Veja que existem dois objetos `AsyncTask` agora. Um é responsável por carregar o XML da internet e salvar no banco. Se tudo correr bem, outro AsyncTask executa para carregar as notícias do banco de dados e exibir na tela. 
+A aplicação RSS disponível neste repositório é uma versão atualizada da que foi passada como exercício anterior, mas *ainda incompleta*. Observe os passos listados abaixo.
+Esta versão está usando a classe `SQLiteRSSHelper` para gerenciar o banco de dados `SQLite` como forma de persistir os dados.
+Isto é, após o download e parsing do RSS, a lista de itens do feed está sendo armazenada no banco, ao invés de exibida diretamente na tela.
+Veja que existem dois objetos `AsyncTask` agora. Um é responsável por carregar o XML da internet e salvar no banco. Se tudo correr bem, outro AsyncTask executa para carregar as notícias do banco de dados e exibir na tela.
 
-Caso você não tenha feito a [Tarefa #1](https://github.com/if1001/exercicio1-rss) use este projeto como base. Do contrário, sugiro que você pegue a estrutura deste projeto como base para modificar o seu projeto. 
-Siga os passos na ordem sugerida e marque mais abaixo, na sua resposta, quais os passos completados. 
+Caso você não tenha feito a [Tarefa #1](https://github.com/if1001/exercicio1-rss) use este projeto como base. Do contrário, sugiro que você pegue a estrutura deste projeto como base para modificar o seu projeto.
+Siga os passos na ordem sugerida e marque mais abaixo, na sua resposta, quais os passos completados.
 Para entregar o exercício, responda o [formulário de entrega](https://docs.google.com/forms/d/e/1FAIpQLSekCO9cBY3FepSBG3KyQasSMkZQvgS5ikN29x4KnyN9xYSj6Q/viewform) até 18/04/2018, às 23h59.
 
   10. A classe `SQLiteRSSHelper` já tem toda a configuração do banco. No entanto, ainda é necessário implementar os métodos de manipulação do banco de dados (da linha 73 em diante), que estão em aberto ainda. A implementação do método `getItems` deve retornar apenas os itens não lidos;
@@ -33,7 +33,7 @@ Para entregar o exercício, responda o [formulário de entrega](https://docs.goo
 
 | Passo | Completou? |
 | ------ | ------ |
-| 10 | **não** |
+| 10 | **sim** |
 | 11 | **não** |
 | 12 | **não** |
 | 13 | **não** |
