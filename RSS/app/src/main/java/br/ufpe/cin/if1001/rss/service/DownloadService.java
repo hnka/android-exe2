@@ -1,8 +1,13 @@
 package br.ufpe.cin.if1001.rss.service;
 
 import android.app.IntentService;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
+import br.ufpe.cin.if1001.rss.R;
 import br.ufpe.cin.if1001.rss.db.SQLiteRSSHelper;
 import br.ufpe.cin.if1001.rss.domain.ItemRSS;
 import br.ufpe.cin.if1001.rss.util.ParserRSS;
@@ -29,6 +35,7 @@ public class DownloadService extends IntentService {
         boolean flagProblema = false;
         List<ItemRSS> items = null;
         String linkFeed = intent.getStringExtra("linkFeed");
+        Boolean sendNotification = intent.getBooleanExtra("sendNotification", false);
 
         Context c = getApplicationContext();
         SQLiteRSSHelper db = SQLiteRSSHelper.getInstance(c);
@@ -43,6 +50,11 @@ public class DownloadService extends IntentService {
                 ItemRSS item = db.getItemRSS(i.getLink());
                 if (item == null) {
                     Log.d("DB", "Encontrado pela primeira vez: " + i.getTitle());
+
+                    if (sendNotification) {
+                        this.generateNotification(i);
+                    }
+
                     db.insertItem(i);
                 }
             }
@@ -58,8 +70,38 @@ public class DownloadService extends IntentService {
 
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(DOWNLOAD_COMPLETE);
+
         sendBroadcast(broadcastIntent);
         Log.d("FINISH DOWNLOADING", DOWNLOAD_COMPLETE);
+    }
+
+    public NotificationManager initNotificationManager(Context context) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        if (Build.VERSION.SDK_INT < 26) {
+            return notificationManager;
+        }
+
+        NotificationChannel channel = new NotificationChannel("default","Notification Channel", NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("New Item Notification Channel");
+        notificationManager.createNotificationChannel(channel);
+
+        return notificationManager;
+    }
+
+    private void generateNotification(ItemRSS item) {
+        Log.d("DOWNLOAD SERVICE", "GENERATE NOTIFICATION");
+        Context c = getApplicationContext();
+
+        NotificationManager manager = this.initNotificationManager(c);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(c, "default");
+        notificationBuilder.setContentTitle("Nova Notícia");
+        notificationBuilder.setContentText(item.getDescription());
+        notificationBuilder.setSmallIcon(R.mipmap.ic_notification);
+
+        manager.notify(0, notificationBuilder.build());
     }
 
     private String getRssFeed(String feed) throws IOException {

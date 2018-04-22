@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     private SQLiteRSSHelper db;
 
     public static final String APP_ON_FOREGROUND = "br.ufpe.cin.if1001.rss.service.APP_ON_FOREGROUND";
+    public static final String APP_ON_BACKGROUND = "br.ufpe.cin.if1001.rss.service.APP_ON_BACKGROUND";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +119,15 @@ public class MainActivity extends Activity {
         sendBroadcast(broadcastIntent);
     }
 
+    protected void onPause() {
+        super.onPause();
+        Log.d("CALLING ON BACKGROUND", "OK");
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(APP_ON_BACKGROUND);
+        sendBroadcast(broadcastIntent);
+    }
+
     @Override
     protected void onDestroy() {
         db.close();
@@ -149,8 +159,7 @@ public class MainActivity extends Activity {
         startService(download);
     }
 
-    class BroadcastListener extends BroadcastReceiver {
-
+    public class BroadcastListener extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.d("ACTION BROADCAST", action);
@@ -159,11 +168,10 @@ public class MainActivity extends Activity {
             if (action.equalsIgnoreCase(DownloadService.DOWNLOAD_COMPLETE)) {
                 new ExibirFeed().execute();
             } else if (action.equalsIgnoreCase(APP_ON_FOREGROUND)) {
-                Context c = getApplicationContext();
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(c);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 String linkfeed = preferences.getString("rssfeedlink", getResources().getString(R.string.rssfeed));
 
-                Intent download = new Intent(c, DownloadService.class);
+                Intent download = new Intent(context, DownloadService.class);
                 download.putExtra("linkFeed", linkfeed);
                 startService(download);
             }
@@ -171,7 +179,6 @@ public class MainActivity extends Activity {
     }
 
     class ExibirFeed extends AsyncTask<Void, Void, Cursor> {
-
         @Override
         protected Cursor doInBackground(Void... voids) {
             Cursor c = db.getItems();
