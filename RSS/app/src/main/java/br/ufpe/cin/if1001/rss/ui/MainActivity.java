@@ -1,7 +1,10 @@
 package br.ufpe.cin.if1001.rss.ui;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -86,6 +89,11 @@ public class MainActivity extends Activity {
                 mCursor.moveToFirst();
             }
         });
+
+
+        // registering broadcast listener
+        IntentFilter intent = new IntentFilter(DownloadService.DOWNLOAD_COMPLETE);
+        this.registerReceiver(new BroadcastListener(), intent);
     }
 
     @Override
@@ -94,12 +102,9 @@ public class MainActivity extends Activity {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String linkfeed = preferences.getString("rssfeedlink", getResources().getString(R.string.rssfeed));
 
-        //new CarregaRSS().execute(linkfeed);
         Intent download = new Intent(this, DownloadService.class);
         download.putExtra("linkFeed", linkfeed);
         startService(download);
-
-        new ExibirFeed().execute();
     }
 
     @Override
@@ -124,7 +129,19 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class ExibirFeed extends AsyncTask<Void, Void, Cursor> {
+    class BroadcastListener extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            Log.d("ACTION BROADCAST", action);
+
+            // if donwload finished action, process feed
+            if (action.equalsIgnoreCase(DownloadService.DOWNLOAD_COMPLETE)) {
+                new ExibirFeed().execute();
+            }
+        }
+    }
+
+    class ExibirFeed extends AsyncTask<Void, Void, Cursor> {
 
         @Override
         protected Cursor doInBackground(Void... voids) {

@@ -3,14 +3,8 @@ package br.ufpe.cin.if1001.rss.service;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -24,6 +18,8 @@ import br.ufpe.cin.if1001.rss.domain.ItemRSS;
 import br.ufpe.cin.if1001.rss.util.ParserRSS;
 
 public class DownloadService extends IntentService {
+
+    public static final String DOWNLOAD_COMPLETE = "br.ufpe.cin.if1001.rss.service.DOWNLOAD_COMPLETE";
 
     public DownloadService() {
         super("DownloadService");
@@ -59,6 +55,11 @@ public class DownloadService extends IntentService {
         if (flagProblema) {
             Toast.makeText(c, "Houve algum problema ao carregar o feed.", Toast.LENGTH_SHORT).show();
         }
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(DOWNLOAD_COMPLETE);
+        sendBroadcast(broadcastIntent);
+        Log.d("FINISH DOWNLOADING", DOWNLOAD_COMPLETE);
     }
 
     private String getRssFeed(String feed) throws IOException {
