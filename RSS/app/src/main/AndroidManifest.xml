@@ -18,6 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.ConfigActivity" />
+
+        <service
+            android:name=".service.DownloadService" />
     </application>
 
 </manifest>

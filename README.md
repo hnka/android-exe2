@@ -35,7 +35,7 @@ Para entregar o exercício, responda o [formulário de entrega](https://docs.goo
 | ------ | ------ |
 | 10 | **sim** |
 | 11 | **sim** |
-| 12 | **não** |
+| 12 | **sim** |
 | 13 | **não** |
 | 14 | **não** |
 | 15 | **não** |
