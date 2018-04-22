@@ -42,6 +42,8 @@ public class MainActivity extends Activity {
     private final String RSS_FEED = "http://rss.cnn.com/rss/edition.rss";
     private SQLiteRSSHelper db;
 
+    public static final String APP_ON_FOREGROUND = "br.ufpe.cin.if1001.rss.service.APP_ON_FOREGROUND";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,20 +93,29 @@ public class MainActivity extends Activity {
         });
 
 
-        // registering broadcast listener
+        // registering broadcast listener for download
+        BroadcastListener listener = new BroadcastListener();
         IntentFilter intent = new IntentFilter(DownloadService.DOWNLOAD_COMPLETE);
-        this.registerReceiver(new BroadcastListener(), intent);
+        this.registerReceiver(listener, intent);
+
+        // registering broadcast listener for app on foreground
+        IntentFilter foregroundIntent = new IntentFilter(APP_ON_FOREGROUND);
+        this.registerReceiver(listener, foregroundIntent);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String linkfeed = preferences.getString("rssfeedlink", getResources().getString(R.string.rssfeed));
+        this.startDownloadService();
+    }
 
-        Intent download = new Intent(this, DownloadService.class);
-        download.putExtra("linkFeed", linkfeed);
-        startService(download);
+    protected void onResume() {
+        super.onResume();
+        Log.d("CALLING ON FOREGROUND", "OK");
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(APP_ON_FOREGROUND);
+        sendBroadcast(broadcastIntent);
     }
 
     @Override
@@ -129,7 +140,17 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void startDownloadService() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String linkfeed = preferences.getString("rssfeedlink", getResources().getString(R.string.rssfeed));
+
+        Intent download = new Intent(this, DownloadService.class);
+        download.putExtra("linkFeed", linkfeed);
+        startService(download);
+    }
+
     class BroadcastListener extends BroadcastReceiver {
+
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             Log.d("ACTION BROADCAST", action);
@@ -137,6 +158,14 @@ public class MainActivity extends Activity {
             // if donwload finished action, process feed
             if (action.equalsIgnoreCase(DownloadService.DOWNLOAD_COMPLETE)) {
                 new ExibirFeed().execute();
+            } else if (action.equalsIgnoreCase(APP_ON_FOREGROUND)) {
+                Context c = getApplicationContext();
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(c);
+                String linkfeed = preferences.getString("rssfeedlink", getResources().getString(R.string.rssfeed));
+
+                Intent download = new Intent(c, DownloadService.class);
+                download.putExtra("linkFeed", linkfeed);
+                startService(download);
             }
         }
     }
